@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { ThumbsUp, ThumbsDown, Reply, FileText, BookOpen, Send } from "lucide-react";
 
 interface Opinion {
@@ -56,6 +57,7 @@ const DiscussionForum = () => {
   const [newOpinion, setNewOpinion] = useState("");
   const [replyingTo, setReplyingTo] = useState<number | null>(null);
   const [replyText, setReplyText] = useState("");
+  const [isReportOpen, setIsReportOpen] = useState(false);
   
   // Check if admin is viewing (from admin dashboard)
   const isAdmin = location.state?.isAdmin || false;
@@ -69,7 +71,7 @@ const DiscussionForum = () => {
   };
 
   const handleViewReport = () => {
-    alert("Opening report viewer");
+    setIsReportOpen(true);
   };
 
   const handleSubmitOpinion = () => {
@@ -261,6 +263,43 @@ const DiscussionForum = () => {
           </div>
         )}
       </main>
+
+      {/* Report Modal */}
+      <Dialog open={isReportOpen} onOpenChange={setIsReportOpen}>
+        <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>AI-Generated Forum Report</DialogTitle>
+            <DialogDescription>
+              Analysis of opinions and discussions on The Public Finance Management Act, 2012
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 mt-4">
+            <section>
+              <h3 className="font-semibold text-lg mb-2">Summary</h3>
+              <p className="text-muted-foreground">
+                The forum discussion shows strong support for increased accountability measures in public finance management. 
+                Participants emphasized the importance of clear implementation guidelines and strict compliance timelines.
+              </p>
+            </section>
+            <section>
+              <h3 className="font-semibold text-lg mb-2">Key Themes</h3>
+              <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                <li>Need for clearer implementation guidelines (mentioned by 67% of participants)</li>
+                <li>Support for stronger penalties for non-compliance</li>
+                <li>Concerns about potential loopholes in Section 7</li>
+                <li>Emphasis on fiscal responsibility and transparency</li>
+              </ul>
+            </section>
+            <section>
+              <h3 className="font-semibold text-lg mb-2">Sentiment Analysis</h3>
+              <p className="text-muted-foreground">
+                Overall sentiment: Positive (78% approval). Most participants view this legislation as a significant 
+                step forward, though concerns remain about implementation details.
+              </p>
+            </section>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
