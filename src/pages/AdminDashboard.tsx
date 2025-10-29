@@ -110,7 +110,7 @@ const AdminDashboard = () => {
   };
 
   const handleViewForum = (forumId: number) => {
-    navigate(`/forum/${forumId}`);
+    navigate(`/forum/${forumId}`, { state: { isAdmin: true } });
   };
 
   return (

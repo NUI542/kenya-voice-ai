@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ThumbsUp, ThumbsDown, Reply, FileText, BookOpen } from "lucide-react";
+import { ThumbsUp, ThumbsDown, Reply, FileText, BookOpen, Send } from "lucide-react";
 
 interface Opinion {
   id: number;
@@ -51,8 +51,12 @@ const sampleOpinions: Opinion[] = [
 const DiscussionForum = () => {
   const { forumId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const [opinions, setOpinions] = useState<Opinion[]>(sampleOpinions);
   const [newOpinion, setNewOpinion] = useState("");
+  
+  // Check if admin is viewing (from admin dashboard)
+  const isAdmin = location.state?.isAdmin || false;
 
   const handleLogout = () => {
     navigate("/");
@@ -113,10 +117,10 @@ const DiscussionForum = () => {
   );
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="flex flex-col min-h-screen bg-background">
       <Navbar isAuthenticated onLogout={handleLogout} />
       
-      <main className="container mx-auto px-4 py-8 max-w-4xl">
+      <main className="flex flex-col flex-1 container mx-auto px-4 py-8 max-w-4xl">
         {/* Forum Header */}
         <div className="mb-6 rounded-lg border-2 border-border bg-card p-6">
           <div className="flex items-start justify-between gap-4">
@@ -144,29 +148,37 @@ const DiscussionForum = () => {
           </div>
         </div>
 
-        {/* Opinion Input */}
-        <div className="mb-6 rounded-lg border border-border bg-card p-4">
-          <Textarea
-            placeholder="Share your opinion on this legislation..."
-            value={newOpinion}
-            onChange={(e) => setNewOpinion(e.target.value)}
-            className="mb-3 min-h-[100px]"
-          />
-          <div className="flex justify-end">
-            <Button onClick={handleSubmitOpinion}>
-              Post Opinion
-            </Button>
-          </div>
-        </div>
-
         {/* Opinions List */}
-        <ScrollArea className="h-[calc(100vh-28rem)]">
-          <div className="space-y-4">
+        <ScrollArea className="flex-1 mb-6">
+          <div className="space-y-4 pr-4">
             {opinions.map((opinion) => (
               <OpinionCard key={opinion.id} opinion={opinion} />
             ))}
           </div>
         </ScrollArea>
+
+        {/* Opinion Input - Only show for non-admin users */}
+        {!isAdmin && (
+          <div className="sticky bottom-0 bg-background pt-4 border-t border-border">
+            <div className="flex items-center gap-2">
+              <Input
+                placeholder="Share your opinion on this legislation..."
+                value={newOpinion}
+                onChange={(e) => setNewOpinion(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSubmitOpinion();
+                  }
+                }}
+                className="flex-1"
+              />
+              <Button onClick={handleSubmitOpinion} size="icon">
+                <Send className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );
