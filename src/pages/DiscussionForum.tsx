@@ -266,38 +266,44 @@ const DiscussionForum = () => {
 
       {/* Report Modal */}
       <Dialog open={isReportOpen} onOpenChange={setIsReportOpen}>
-        <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>AI-Generated Forum Report</DialogTitle>
-            <DialogDescription>
-              Analysis of opinions and discussions on The Public Finance Management Act, 2012
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4 mt-4">
-            <section>
-              <h3 className="font-semibold text-lg mb-2">Summary</h3>
-              <p className="text-muted-foreground">
-                The forum discussion shows strong support for increased accountability measures in public finance management. 
-                Participants emphasized the importance of clear implementation guidelines and strict compliance timelines.
-              </p>
-            </section>
-            <section>
-              <h3 className="font-semibold text-lg mb-2">Key Themes</h3>
-              <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-                <li>Need for clearer implementation guidelines (mentioned by 67% of participants)</li>
-                <li>Support for stronger penalties for non-compliance</li>
-                <li>Concerns about potential loopholes in Section 7</li>
-                <li>Emphasis on fiscal responsibility and transparency</li>
-              </ul>
-            </section>
-            <section>
-              <h3 className="font-semibold text-lg mb-2">Sentiment Analysis</h3>
-              <p className="text-muted-foreground">
-                Overall sentiment: Positive (78% approval). Most participants view this legislation as a significant 
-                step forward, though concerns remain about implementation details.
-              </p>
-            </section>
+        <DialogContent className="max-w-4xl max-h-[85vh] p-0 gap-0">
+          <div className="bg-muted/30 border-b px-6 py-4">
+            <DialogHeader>
+              <DialogTitle className="text-xl">AI-Generated Forum Report</DialogTitle>
+              <DialogDescription>
+                Analysis of opinions and discussions on The Public Finance Management Act, 2012
+              </DialogDescription>
+            </DialogHeader>
           </div>
+          <ScrollArea className="h-[calc(85vh-5rem)]">
+            <div className="bg-background p-8 space-y-6">
+              <section className="space-y-3">
+                <h3 className="font-bold text-lg border-b pb-2">Summary</h3>
+                <p className="text-foreground leading-relaxed">
+                  The forum discussion shows strong support for increased accountability measures in public finance management. 
+                  Participants emphasized the importance of clear implementation guidelines and strict compliance timelines.
+                </p>
+              </section>
+              
+              <section className="space-y-3">
+                <h3 className="font-bold text-lg border-b pb-2">Key Themes</h3>
+                <ul className="list-disc list-inside space-y-2 text-foreground leading-relaxed">
+                  <li>Need for clearer implementation guidelines (mentioned by 67% of participants)</li>
+                  <li>Support for stronger penalties for non-compliance</li>
+                  <li>Concerns about potential loopholes in Section 7</li>
+                  <li>Emphasis on fiscal responsibility and transparency</li>
+                </ul>
+              </section>
+              
+              <section className="space-y-3">
+                <h3 className="font-bold text-lg border-b pb-2">Sentiment Analysis</h3>
+                <p className="text-foreground leading-relaxed">
+                  Overall sentiment: Positive (78% approval). Most participants view this legislation as a significant 
+                  step forward, though concerns remain about implementation details.
+                </p>
+              </section>
+            </div>
+          </ScrollArea>
         </DialogContent>
       </Dialog>
     </div>
