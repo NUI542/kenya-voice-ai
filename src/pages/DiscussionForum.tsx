@@ -54,6 +54,8 @@ const DiscussionForum = () => {
   const location = useLocation();
   const [opinions, setOpinions] = useState<Opinion[]>(sampleOpinions);
   const [newOpinion, setNewOpinion] = useState("");
+  const [replyingTo, setReplyingTo] = useState<number | null>(null);
+  const [replyText, setReplyText] = useState("");
   
   // Check if admin is viewing (from admin dashboard)
   const isAdmin = location.state?.isAdmin || false;
@@ -74,7 +76,7 @@ const DiscussionForum = () => {
     if (!newOpinion.trim()) return;
 
     const opinion: Opinion = {
-      id: opinions.length + 1,
+      id: Date.now(),
       author: "You",
       content: newOpinion,
       upvotes: 0,
@@ -85,6 +87,42 @@ const DiscussionForum = () => {
 
     setOpinions([opinion, ...opinions]);
     setNewOpinion("");
+  };
+
+  const handleSubmitReply = (parentId: number) => {
+    if (!replyText.trim()) return;
+
+    const newReply: Opinion = {
+      id: Date.now(),
+      author: "You",
+      content: replyText,
+      upvotes: 0,
+      downvotes: 0,
+      replies: [],
+      timestamp: new Date().toLocaleString(),
+    };
+
+    const addReplyToOpinion = (opinions: Opinion[]): Opinion[] => {
+      return opinions.map((opinion) => {
+        if (opinion.id === parentId) {
+          return {
+            ...opinion,
+            replies: [...opinion.replies, newReply],
+          };
+        }
+        if (opinion.replies.length > 0) {
+          return {
+            ...opinion,
+            replies: addReplyToOpinion(opinion.replies),
+          };
+        }
+        return opinion;
+      });
+    };
+
+    setOpinions(addReplyToOpinion(opinions));
+    setReplyText("");
+    setReplyingTo(null);
   };
 
   const OpinionCard = ({ opinion, isReply = false }: { opinion: Opinion; isReply?: boolean }) => (
@@ -103,13 +141,56 @@ const DiscussionForum = () => {
           <ThumbsDown className="h-4 w-4" />
           {opinion.downvotes}
         </Button>
-        {!isReply && (
-          <Button size="sm" variant="ghost" className="gap-1">
+        {!isAdmin && (
+          <Button 
+            size="sm" 
+            variant="ghost" 
+            className="gap-1"
+            onClick={() => setReplyingTo(opinion.id)}
+          >
             <Reply className="h-4 w-4" />
             Reply
           </Button>
         )}
       </div>
+      
+      {/* Reply Input */}
+      {replyingTo === opinion.id && (
+        <div className="mt-3 flex items-center gap-2">
+          <Input
+            placeholder="Write your reply..."
+            value={replyText}
+            onChange={(e) => setReplyText(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleSubmitReply(opinion.id);
+              }
+              if (e.key === 'Escape') {
+                setReplyingTo(null);
+                setReplyText("");
+              }
+            }}
+            className="flex-1"
+            autoFocus
+          />
+          <Button onClick={() => handleSubmitReply(opinion.id)} size="icon">
+            <Send className="h-4 w-4" />
+          </Button>
+          <Button 
+            onClick={() => {
+              setReplyingTo(null);
+              setReplyText("");
+            }} 
+            size="sm" 
+            variant="ghost"
+          >
+            Cancel
+          </Button>
+        </div>
+      )}
+
+      {/* Nested Replies */}
       {opinion.replies.map((reply) => (
         <OpinionCard key={reply.id} opinion={reply} isReply />
       ))}
