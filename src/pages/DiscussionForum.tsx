@@ -126,12 +126,12 @@ const DiscussionForum = () => {
   };
 
   const OpinionCard = ({ opinion, isReply = false }: { opinion: Opinion; isReply?: boolean }) => (
-    <div className={`rounded-lg border border-border bg-card p-4 ${isReply ? "ml-8 mt-2" : ""}`}>
+    <div className={`py-2 ${isReply ? "ml-4 pl-4 border-l-2 border-border" : ""}`}>
       <div className="mb-2 flex items-center justify-between">
-        <span className="font-semibold">{opinion.author}</span>
-        <span className="text-sm text-muted-foreground">{opinion.timestamp}</span>
+        <span className="font-semibold text-sm">{opinion.author}</span>
+        <span className="text-xs text-muted-foreground">{opinion.timestamp}</span>
       </div>
-      <p className="mb-3 text-card-foreground">{opinion.content}</p>
+      <p className="mb-3">{opinion.content}</p>
       <div className="flex items-center gap-4">
         <Button size="sm" variant="ghost" className="gap-1">
           <ThumbsUp className="h-4 w-4" />
